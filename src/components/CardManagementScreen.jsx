@@ -36,7 +36,7 @@ export default function CardManagementScreen({
       try {
         const shop_id = localStorage.getItem("shopid");
         const balanceRes = await fetch(
-          `https://corebingoapi.onrender.com/balance/${shop_id}`
+          `https://alfarhaapp.onrender.com/balance/${shop_id}`
         );
         if (!balanceRes.ok) throw new Error("Failed to fetch balance");
         const { balance } = await balanceRes.json();
@@ -98,7 +98,7 @@ export default function CardManagementScreen({
     try {
       const shopId = localStorage.getItem("shopid");
 
-      const res = await fetch("https://corebingoapi.onrender.com/startgame", {
+      const res = await fetch("https://alfarhaapp.onrender.com/startgame", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

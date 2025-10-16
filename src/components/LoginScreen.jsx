@@ -25,7 +25,7 @@ const LoginScreen = ({ setCurrentUser, setCurrentView }) => {
 
     try {
       const response = await fetch(
-        "https://corebingoapi.onrender.com/loginshop",
+        "https://alfarhaapp.onrender.com/loginshop",
         {
           // adjust URL as needed
           method: "POST",

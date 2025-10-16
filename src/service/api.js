@@ -1,9 +1,9 @@
 // services/api.js
 export async function submitWinning({ cardId, roundId, shopId, prize }) {
-  const response = await fetch('https://corebingoapi.onrender.com/winings', {
-    method: 'POST',
+  const response = await fetch("https://alfarhaapp.onrender.com/winings", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       card_id: cardId,
@@ -15,7 +15,7 @@ export async function submitWinning({ cardId, roundId, shopId, prize }) {
 
   if (!response.ok) {
     const err = await response.json();
-    throw new Error(err.detail || 'Failed to submit winning');
+    throw new Error(err.detail || "Failed to submit winning");
   }
 
   return await response.json();
