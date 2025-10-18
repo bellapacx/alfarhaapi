@@ -169,29 +169,6 @@ export default function DashboardScreen({
 
     console.log("✅ Correct audio files preloaded by column range");
   }, []);
-  useEffect(() => {
-    const shopId = localStorage.getItem("shopid");
-
-    if (!shopId) {
-      console.log("No shopId found — using local default cards.");
-      setBingoCards(bingoCardsDatas); // local default
-      return;
-    }
-
-    fetch(`/data/${shopId}.json`)
-      .then((res) => {
-        console.log("Fetch response:", res);
-        if (!res.ok) throw new Error("Not found");
-        return res.json();
-      })
-      .then((data) => {
-        setBingoCards(data);
-      })
-      .catch((err) => {
-        alert("Connection problem — using local default.");
-        setBingoCards(bingoCardsData); // fallback to default
-      });
-  }, []);
 
   const playSoundForCall = (category, number) => {
     const isArabic = language === "Arabic";
@@ -628,7 +605,7 @@ export default function DashboardScreen({
       return;
     }
 
-    const selectedCardsData = bingoCardsData.filter((card) =>
+    const selectedCardsData = bingoCardsDatas.filter((card) =>
       selectedCards.includes(card.card_id)
     );
     const card = selectedCardsData.find(
@@ -1203,7 +1180,7 @@ export default function DashboardScreen({
         onClose={() => setIsModalOpen(false)}
         winningCardIds={winningCards}
         failedCards={failedCards}
-        allBingoCards={bingoCardsData}
+        allBingoCards={bingoCardsDatas}
         calledNumbersSet={new Set(calledNumbers)}
         status={status}
         winningPatterns={winningPatterns}
