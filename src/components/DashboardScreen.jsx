@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Play, Pause, RotateCcw, Maximize2 } from "react-feather";
 import WinningCardsModal from "./WinningcardsModal";
 // Adjust the import path as necessary
-import bingoCardsData from "../data/bingoCards.json"; // Ensure this path is correct
+import bingoCardsDatas from "../data/bingoCards.json"; // Ensure this path is correct
 
 const NUMBER_RANGE = Array.from({ length: 75 }, (_, i) => i + 1);
 const CATEGORIES = {
@@ -174,7 +174,7 @@ export default function DashboardScreen({
 
     if (!shopId) {
       console.log("No shopId found — using local default cards.");
-      setBingoCards(bingoCardsData); // local default
+      setBingoCards(bingoCardsDatas); // local default
       return;
     }
 
