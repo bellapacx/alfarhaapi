@@ -189,7 +189,7 @@ export default function DashboardScreen({
       })
       .catch((err) => {
         alert("Connection problem — using local default.");
-        //setBingoCards(bingoCardsData); // fallback to default
+        setBingoCards(bingoCardsData); // fallback to default
       });
   }, []);
 
