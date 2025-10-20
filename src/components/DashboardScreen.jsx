@@ -823,7 +823,7 @@ export default function DashboardScreen({
     // 🛑 Only check for winners if mode is not manual
     if (mode !== "manual") {
       const currentCalledNumbersSet = new Set(updatedCalledNumbers);
-      const cardsToCheck = bingoCardsData.filter((card) =>
+      const cardsToCheck = bingoCardsDatas.filter((card) =>
         selectedCards.includes(card.card_id)
       );
 
