@@ -25,34 +25,79 @@ const getCardGrid = (card) => {
 const isMarked = (num, calledNumbersSet) =>
   num === null || calledNumbersSet.has(num);
 
-// ✅ Auto calculate winning pattern dynamically
+// ✅ Auto-detect only *fully satisfied* patterns
 const getWinningCells = (grid, calledNumbersSet) => {
   const winningCells = new Set();
 
-  // Rows
+  const markRow = (r) => {
+    for (let c = 0; c < 5; c++) winningCells.add(`${r},${c}`);
+  };
+  const markCol = (c) => {
+    for (let r = 0; r < 5; r++) winningCells.add(`${r},${c}`);
+  };
+  const markDiag = (reverse = false) => {
+    for (let i = 0; i < 5; i++) {
+      const c = reverse ? 4 - i : i;
+      winningCells.add(`${i},${c}`);
+    }
+  };
+
+  // --- 1️⃣ Rows ---
   for (let r = 0; r < 5; r++) {
-    if (grid[r].every((num) => isMarked(num, calledNumbersSet))) {
-      for (let c = 0; c < 5; c++) winningCells.add(`${r},${c}`);
-    }
+    const rowComplete = grid[r].every((n) => isMarked(n, calledNumbersSet));
+    if (rowComplete) markRow(r);
   }
 
-  // Columns
+  // --- 2️⃣ Columns ---
   for (let c = 0; c < 5; c++) {
-    if (grid.every((row) => isMarked(row[c], calledNumbersSet))) {
-      for (let r = 0; r < 5; r++) winningCells.add(`${r},${c}`);
-    }
+    const colComplete = grid.every((row) => isMarked(row[c], calledNumbersSet));
+    if (colComplete) markCol(c);
   }
 
-  // Diagonal ↘
-  if ([0, 1, 2, 3, 4].every((i) => isMarked(grid[i][i], calledNumbersSet))) {
-    for (let i = 0; i < 5; i++) winningCells.add(`${i},${i}`);
-  }
+  // --- 3️⃣ Diagonals ---
+  const leftDiagComplete = [0, 1, 2, 3, 4].every((i) =>
+    isMarked(grid[i][i], calledNumbersSet)
+  );
+  const rightDiagComplete = [0, 1, 2, 3, 4].every((i) =>
+    isMarked(grid[i][4 - i], calledNumbersSet)
+  );
+  if (leftDiagComplete) markDiag(false);
+  if (rightDiagComplete) markDiag(true);
 
-  // Diagonal ↙
-  if (
-    [0, 1, 2, 3, 4].every((i) => isMarked(grid[i][4 - i], calledNumbersSet))
-  ) {
-    for (let i = 0; i < 5; i++) winningCells.add(`${i},${4 - i}`);
+  // --- 4️⃣ Four Corners ---
+  const corners = [
+    [0, 0],
+    [0, 4],
+    [4, 0],
+    [4, 4],
+  ];
+  const allCornersMarked = corners.every(([r, c]) =>
+    isMarked(grid[r][c], calledNumbersSet)
+  );
+  if (allCornersMarked)
+    corners.forEach(([r, c]) => winningCells.add(`${r},${c}`));
+
+  // --- 5️⃣ Inner Corners + Center ---
+  const inner = [
+    [1, 1],
+    [1, 3],
+    [3, 1],
+    [3, 3],
+    [2, 2],
+  ];
+  const allInnerMarked = inner.every(([r, c]) =>
+    isMarked(grid[r][c], calledNumbersSet)
+  );
+  if (allInnerMarked) inner.forEach(([r, c]) => winningCells.add(`${r},${c}`));
+
+  // --- 6️⃣ Full House ---
+  const fullHouse = grid.every((row) =>
+    row.every((n) => isMarked(n, calledNumbersSet))
+  );
+  if (fullHouse) {
+    grid.forEach((row, r) =>
+      row.forEach((_, c) => winningCells.add(`${r},${c}`))
+    );
   }
 
   return winningCells;
@@ -215,15 +260,15 @@ export default function WinningCardsModal({
                               <div
                                 key={key}
                                 className={`p-3 text-center font-bold rounded-lg border border-white/20 text-lg transition-all duration-300
-                                  ${
-                                    num === null
-                                      ? "bg-purple-700 text-yellow-200"
-                                      : isWin
-                                      ? "bg-green-500 text-white font-extrabold animate-pulse shadow-green-400/60" // 🟩 Winning
-                                      : marked
-                                      ? "bg-yellow-400 text-blue-900 font-bold shadow-yellow-400/50" // 🟨 Called
-                                      : "bg-purple-800 text-white/80"
-                                  }`}
+        ${
+          num === null
+            ? "bg-purple-700 text-yellow-200"
+            : isWin
+            ? "bg-green-500 text-white font-extrabold animate-pulse shadow-green-400/60" // 🟩 only complete pattern
+            : marked
+            ? "bg-yellow-400 text-blue-900 font-bold shadow-yellow-400/50" // 🟨 called but not part of full pattern
+            : "bg-purple-800 text-white/80"
+        }`}
                               >
                                 {num === null
                                   ? "FREE"
